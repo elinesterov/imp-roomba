@@ -14,7 +14,6 @@ commands <- {"clean":1,
                   "status":1
 };
 
-
 hardware.uart57.configure(115200, 8, PARITY_NONE, 1, NO_CTSRTS);
 
 function bytesToInt(byte1, byte2){
@@ -28,7 +27,6 @@ function toSignedInt(data){
     local signedInt = (data << (32 - 16)) >> (32 - 16);
     return signedInt
 }
-
 
 function wakeup(){
     //funstion to wake up imp
@@ -109,7 +107,6 @@ function isDocked(){
     else{
         return false
     }
-
 }
 
 function readAllSensors(){
@@ -158,8 +155,6 @@ function getSensorsData(){
     // one byte signed
     local batteryTemperature = d[5];
     
-    //server.log("Test: " + sign(bytesToInt(249, 151)));
-    
     // Charge in mAh
     // 2 bytes unsigned
     local currentCharge = bytesToInt(d[6], d[7]);
@@ -169,7 +164,6 @@ function getSensorsData(){
     // charged.
     // 2 bytes unsigned    
     local currentCapacity = bytesToInt(d[8], d[9]);
-    
     local docState;
     
     if (current >= 0){
@@ -235,7 +229,6 @@ function runCommand(command){
         else{
             res = {result = "ok", command = status};
         }
-
     return res;
 }
 

@@ -1,8 +1,8 @@
 commands <- {"clean":1, 
-                  "sleep":1, 
-                  "doc":1, 
-                  "spot":1,
-                  "status":1
+             "sleep":1, 
+             "doc":1, 
+             "spot":1,
+             "status":1
             };
 
 mac <- "";
@@ -28,7 +28,7 @@ function generateKey() {
     return key.tostring();
 }
 
-// check every second if response is wayting > TIMEOUT
+// check every second if response is waiting > TIMEOUT
 // send timeout error if true
 function responsesHandler() {
     imp.wakeup(1, responsesHandler);
@@ -47,13 +47,11 @@ function responsesHandler() {
 device.on("asyncdata", function(data) {
     //server.log("sending response");
     if (!(data.k in responses)) {
-        //server.log(format("response %s already timed-out.", data.t));
         return;
     }
     local response = responses[data.k].resp;
     response.header("Content-type", "application/json");
     response.send(200, http.jsonencode(data.d));
-
     delete responses[data.k];
 });
 
@@ -62,23 +60,16 @@ function httpHandler(req, resp) {
     local path = split(req.path, "/");
     local imp_mac = "";
     local command = "";
-    //server.log(imp_mac);
 
     //extract imp mac from a path if any
     if (path.len() >= 2){
         imp_mac = path[1];
     }
-    
-    // check if mac is right
-    // TODO: get it from device via variable?
-    server.log("Mac : " + mac);
-
 
     if (imp_mac == mac){
         //server.log("Rigth request");
     
         // before processing any request need to check whether device is connected
-        //server.log("Device is connected: " + device.isconnected());
         if (device.isconnected()){
 
             // get command from request
@@ -92,27 +83,12 @@ function httpHandler(req, resp) {
                     
                     if (req.query["command"] in commands){
                         command = req.query["command"];
-                        //server.log("Command request: " + command);
                     }
                 }
                 
             }
-            // else if (req.method == "POST"){
-            //     //server.log("POST request received: " + req.body);
-            //     local body = http.jsondecode(req.body)
-            //     //server.log("Body: " + body);
-            //     if ("command" in body){
-            //         //server.log("Command: " + body["command"]);
-
-            //         //if (body["command"] == "start" || body["command"] == "stop"){
-            //         if (body["command"] in commands){
-            //             command = body["command"];
-            //             //server.log("Command request: " + command);
-            //         }
-            //     }
-            // }
             
-            //send command to device
+            // send command to device if command is not empty
             if (command != ""){
 
                 // generate key, and store the response object
@@ -122,7 +98,7 @@ function httpHandler(req, resp) {
                 local data = { k = responseKey, r = command, d = null };
                 device.send("processCommand" data);
             }
-            //wrong command need to send response about it
+            // wrong command need to send response about it
             else {
                 local response = http.jsonencode({ "result": "error", "command": "unknown", "error": "unknown command"});
                 resp.header("Content-type", "application/json");
@@ -131,7 +107,7 @@ function httpHandler(req, resp) {
             }
             return;
         }
-         // if diconnected response with error
+         // if imp device is disconnected response with error
         else {
             //if we can find command in request
             local response = {};
@@ -143,11 +119,10 @@ function httpHandler(req, resp) {
             }
             resp.header("Content-type", "application/json");
             resp.send(200, response);
-            
         }
-        
-
     }
+    // if mac address in request doesn't match, or something else is messed up
+    // response with 401
     else{
         resp.send(401, "Unauthorized");
     }
