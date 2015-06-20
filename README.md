@@ -9,6 +9,7 @@ where https://agent.electricimp.com/agent_url - agent url
       device mac - device mac
 
 command could be :
+
                    - clean 
                    - sleep 
                    - doc 
