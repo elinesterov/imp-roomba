@@ -7,16 +7,22 @@ commands <- {"clean":1,
 
 mac <- "";
 
-// get imp's mac
-device.send("getImpMac", "test");
+server.log("Agent Started");
+
+// when device is connected 
+// request device mac
+device.onconnect(function(){
+
+    // get imp's mac
+    device.send("getImpMac", "test");
+
+});
+
 
 device.on("setMac", function(data){
     mac = data;
-    
-    } );
-
-server.log("Agent Started");
-server.log("Imp mac: " + mac);
+    server.log("Imp mac: " + mac);
+});
 
 const TIMEOUT = 15; // close hanging async requests after 15 seconds
 responses <- {};
