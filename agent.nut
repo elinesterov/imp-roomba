@@ -5,24 +5,25 @@ commands <- {"clean":1,
              "status":1
             };
 
+// hardcoded imp's mac address
 mac <- "";
 
 server.log("Agent Started");
 
 // when device is connected 
 // request device mac
-device.onconnect(function(){
+// device.onconnect(function(){
 
-    // get imp's mac
-    device.send("getImpMac", "test");
+//     // get imp's mac
+//     device.send("getImpMac", "test");
 
-});
+// });
 
 
-device.on("setMac", function(data){
-    mac = data;
-    server.log("Imp mac: " + mac);
-});
+// device.on("setMac", function(data){
+//     mac = data;
+//     server.log("Imp mac: " + mac);
+// });
 
 const TIMEOUT = 15; // close hanging async requests after 15 seconds
 responses <- {};
@@ -73,7 +74,6 @@ function httpHandler(req, resp) {
     }
 
     if (imp_mac == mac){
-        //server.log("Rigth request");
     
         // before processing any request need to check whether device is connected
         if (device.isconnected()){
@@ -81,7 +81,6 @@ function httpHandler(req, resp) {
             // get command from request
             if (req.method == "GET"){
                 if ("status" in req.query){
-                    //server.log("Processing status update command");
                     command = "status";
                 }
                 if ("command" in req.query){

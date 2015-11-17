@@ -263,11 +263,12 @@ function commandProcesser(data){
 
 }
 
-function getMacAddress(data){
-    //returns imp mac address
-    server.log(imp.getmacaddress());
-    agent.send("setMac", imp.getmacaddress());
-}
+// function getMacAddress(data){
+//     //returns imp mac address
+//     server.log(imp.getmacaddress());
+//     agent.send("setMac", imp.getmacaddress());
+// }
 
 agent.on("processCommand", commandProcesser);
-agent.on("getImpMac", getMacAddress);
+// agent.on("getImpMac", getMacAddress);
+server.log("Device started");
